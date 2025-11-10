@@ -92,6 +92,23 @@ class Cache
     }
 
     /**
+     * Store given key in tags.
+     *
+     * Ensure key exists in the given tags.
+     * Redis sets are unique, so the same value will not be added twice.
+     *
+     * @param string $key
+     * @param array $tags
+     */
+    public function setCacheTagsForKey($key, array $tags)
+    {
+        $key = $this->redis->prefix($key);
+        foreach ($tags as $tag) {
+            $this->redis->sadd($this->redis->prefix($tag), $key);
+        }
+    }
+
+    /**
      * Returns value of a cached key.
      *
      * This method does not check if there is a value available for the given key, may return unexpected values if not.
